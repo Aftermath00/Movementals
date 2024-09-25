@@ -1,0 +1,57 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.10 (swiftlang-5.10.0.13 clang-1500.3.9.4)
+// swift-module-flags: -target arm64-apple-ios17.5 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Onone -enable-bare-slash-regex -module-name ElementalFramework
+import AVFoundation
+import Combine
+import CoreImage
+import CoreML
+@_exported import ElementalFramework
+import Foundation
+import Speech
+import Swift
+import SwiftUI
+import Vision
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class ElementViewModelBridge : ObjectiveC.NSObject {
+  @objc public static let shared: ElementalFramework.ElementViewModelBridge
+  @objc public func switchToDefense()
+  @objc public func switchToAttack()
+  @objc public func startListening()
+  @objc public func stopListening()
+  @objc public func getRecognizedText() -> Swift.String
+  @objc public func getIsListening() -> Swift.Bool
+  @objc public func getErrorMessages() -> Swift.String
+  @objc public func startCamera()
+  @objc public func stopCamera()
+  @objc public func getCurrentElementName() -> Swift.String
+  @objc public func getRecognizedElementName() -> Swift.String
+  @objc deinit
+}
+@_cdecl("InitializeElementViewModel")
+public func InitializeElementViewModel()
+@_cdecl("SwitchToDefense")
+public func SwitchToDefense()
+@_cdecl("SwitchToAttack")
+public func SwitchToAttack()
+@_cdecl("StartListening")
+public func StartListening()
+@_cdecl("StopListening")
+public func StopListening()
+@_cdecl("GetRecognizedTextNative")
+public func GetRecognizedTextNative() -> Swift.UnsafePointer<Swift.CChar>?
+@_cdecl("GetIsListening")
+public func GetIsListening() -> Swift.Bool
+@_cdecl("GetErrorMessagesNative")
+public func GetErrorMessages() -> Swift.UnsafePointer<Swift.CChar>?
+@_cdecl("StartCamera")
+public func StartCamera()
+@_cdecl("StopCamera")
+public func StopCamera()
+@_cdecl("GetCurrentElementName")
+public func GetCurrentElementName() -> Swift.UnsafePointer<Swift.CChar>?
+@_cdecl("GetRecognizedElementName")
+public func GetRecognizedElementName() -> Swift.UnsafePointer<Swift.CChar>?
+@_cdecl("FreeString")
+public func FreeString(_ ptr: Swift.UnsafeMutablePointer<Swift.CChar>?)
