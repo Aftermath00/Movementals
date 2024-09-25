@@ -1,12 +1,12 @@
 using UnityEngine;
 using Unity.Netcode;
+using System.Collections;
 
 public class GameSceneManager : NetworkBehaviour
 {
     public static GameSceneManager Instance;
 
     [SerializeField] private string RecognitionSceneName = "RecognitionScene";
-    [SerializeField] private string LobbyScene = "LobbyScene";
 
     private void Start()
     {
@@ -26,31 +26,24 @@ public class GameSceneManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RequestSceneChangeServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        ulong clientId = serverRpcParams.Receive.SenderClientId;
-        ChangeSceneClientRpc(clientId);
+        ChangeSceneClientRpc();
     }
 
     [ClientRpc]
-    private void ChangeSceneClientRpc(ulong clientId)
+    private void ChangeSceneClientRpc()
     {
-        if (NetworkManager.Singleton.LocalClientId == clientId)
+        StartCoroutine(LoadSceneAsync());
+    }
+
+    private IEnumerator LoadSceneAsync()
+    {
+        AsyncOperation asyncLoad = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(RecognitionSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+        
+        // Wait until the scene fully loads
+        while (!asyncLoad.isDone)
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(RecognitionSceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+            yield return null;
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestReturnToMainGameServerRpc(ServerRpcParams serverRpcParams = default)
-    {
-        ulong clientId = serverRpcParams.Receive.SenderClientId;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(LobbyScene, UnityEngine.SceneManagement.LoadSceneMode.Single);
-    }
-
-    public void ActivateAttackMode()
-    {
-        if (!IsServer)
-        {
-            RequestSceneChangeServerRpc();
-        }
-    }
 }

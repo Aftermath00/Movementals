@@ -1,171 +1,3 @@
-// using UnityEngine;
-// using UnityEngine.UI;
-// using Unity.Netcode;
-// using Unity.Netcode.Transports.UTP;
-// using Unity.Networking.Transport.Relay;
-// using System.Collections;
-// using TMPro;
-// using Unity.Services.Authentication;
-// using Unity.Services.Core;
-// using Unity.Services.Relay;
-// using Unity.Services.Relay.Models;
-// using System.Collections.Generic;
-// using System.Linq;
-
-// public class RelayManager : MonoBehaviour
-// {
-//     [SerializeField] Button hostButton;
-//     [SerializeField] Button startGameButton;
-//     [SerializeField] TextMeshProUGUI codeText;
-//     [SerializeField] TextMeshProUGUI playerCountText;
-//     [SerializeField] TextMeshProUGUI[] playerStatusTexts;
-//     [SerializeField] Image[] characterImages;
-//     [SerializeField] Sprite[] characterSprites;
-
-//     private const int maxPlayers = 4;
-//     private int currentPlayerCount = 0;
-//     private Dictionary<ulong, int> playerCharacterMap = new Dictionary<ulong, int>();
-//     private List<int> availableCharacterIndices;
-
-//     async void Start()
-//     {
-//         await UnityServices.InitializeAsync();
-//         await AuthenticationService.Instance.SignInAnonymouslyAsync();
-
-//         hostButton.onClick.AddListener(CreateRelay);
-//         startGameButton.interactable = false;
-
-//         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-//         NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
-
-//         InitializeAvailableCharacters();
-//     }
-
-//     private void InitializeAvailableCharacters()
-//     {
-//         availableCharacterIndices = Enumerable.Range(0, characterSprites.Length).ToList();
-//     }
-
-//     async void CreateRelay()
-//     {
-//         try
-//         {
-//             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
-//             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-
-//             RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
-//             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-//             NetworkManager.Singleton.StartHost();
-
-//             codeText.text = $"Room Code: {joinCode}";
-
-//             // Don't assign a character to the host
-//             UpdatePlayerCount();
-//         }
-//         catch (RelayServiceException e)
-//         {
-//             Debug.LogError($"Relay create failed: {e.Message}");
-//         }
-//     }
-
-//     private void OnClientConnected(ulong clientId)
-//     {
-//         if (NetworkManager.Singleton.IsServer && clientId != NetworkManager.Singleton.LocalClientId)
-//         {
-//             AssignCharacter(clientId);
-//             UpdatePlayerCount();
-//         }
-//     }
-
-//     private void OnClientDisconnected(ulong clientId)
-//     {
-//         if (NetworkManager.Singleton.IsServer && clientId != NetworkManager.Singleton.LocalClientId)
-//         {
-//             if (playerCharacterMap.TryGetValue(clientId, out int characterIndex))
-//             {
-//                 availableCharacterIndices.Add(characterIndex);
-//             }
-//             playerCharacterMap.Remove(clientId);
-//             UpdatePlayerCount();
-//         }
-//     }
-
-//     private void UpdatePlayerCount()
-//     {
-//         currentPlayerCount = NetworkManager.Singleton.ConnectedClientsIds.Count - 1; // Exclude host
-//         playerCountText.text = $"Players Connected: {currentPlayerCount}/{maxPlayers}";
-
-//         for (int i = 0; i < maxPlayers; i++)
-//         {
-//             if (i < currentPlayerCount)
-//             {
-//                 playerStatusTexts[i].text = "Connected";
-//                 ulong clientId = NetworkManager.Singleton.ConnectedClientsIds
-//                     .Where(id => id != NetworkManager.Singleton.LocalClientId)
-//                     .ElementAt(i);
-
-//                 if (playerCharacterMap.TryGetValue(clientId, out int characterIndex))
-//                 {
-//                     characterImages[i].sprite = characterSprites[characterIndex];
-//                 }
-//             }
-//             else
-//             {
-//                 playerStatusTexts[i].text = "Not Connected";
-//                 int randomCharacterIndex = GetRandomAvailableCharacterIndex();
-//                 characterImages[i].sprite = characterSprites[randomCharacterIndex];
-//             }
-//         }
-
-//         startGameButton.interactable = (currentPlayerCount == maxPlayers);
-//     }
-
-//     private void AssignCharacter(ulong clientId)
-//     {
-//         if (!playerCharacterMap.ContainsKey(clientId))
-//         {
-//             int characterIndex = GetRandomAvailableCharacterIndex();
-//             playerCharacterMap[clientId] = characterIndex;
-//             AssignCharacterClientRpc(clientId, characterIndex);
-//         }
-//     }
-
-//     private int GetRandomAvailableCharacterIndex()
-//     {
-//         if (availableCharacterIndices.Count == 0)
-//         {
-//             InitializeAvailableCharacters();
-//         }
-
-//         int index = Random.Range(0, availableCharacterIndices.Count);
-//         int characterIndex = availableCharacterIndices[index];
-//         availableCharacterIndices.RemoveAt(index);
-//         return characterIndex;
-//     }
-
-//     [ClientRpc]
-//     private void AssignCharacterClientRpc(ulong clientId, int characterIndex)
-//     {
-//         if (NetworkManager.Singleton.LocalClientId == clientId)
-//         {
-//             Debug.Log($"Assigned character {characterIndex} to client {clientId}");
-//         }
-//     }
-
-//     void Update()
-//     {
-//         if (NetworkManager.Singleton.IsServer)
-//         {
-//             int connectedPlayers = NetworkManager.Singleton.ConnectedClientsIds.Count - 1; // Exclude host
-//             if (connectedPlayers != currentPlayerCount)
-//             {
-//                 UpdatePlayerCount();
-//             }
-//         }
-//     }
-// }
-
-
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
@@ -403,20 +235,20 @@ public class RelayManager : MonoBehaviour
             }
             
             gameManager.SpawnMonsterServerRpc();
-            StartCoroutine(WaitForGameSceneManager());
         }
-        Debug.Log("Game started!");
-    }
-
-    private IEnumerator WaitForGameSceneManager()
-    {
-        while (GameSceneManager.Instance == null)
+        if (NetworkManager.Singleton.IsClient)
         {
-            yield return null;
+            StartCoroutine(LoadRecognitionScene());
         }
-
-        GameSceneManager.Instance.RequestSceneChangeServerRpc();
     }
+
+    private IEnumerator LoadRecognitionScene()
+    {
+        yield return new WaitForSeconds(1f); // Short delay to ensure all clients are ready
+        Debug.Log("Attempting to load Recognition Scene");
+        NetworkManager.Singleton.SceneManager.LoadScene("RecognitionScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
+    }
+
 
     [ClientRpc]
     private void SendHeartbeatClientRpc()

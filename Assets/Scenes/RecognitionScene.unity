@@ -2883,8 +2883,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643a2cc60439447ec9cd0577f4b7234c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LobbySceneName: LobbyScene
-  RecognitionSceneName: RecognitionScene
+  defenseManager: {fileID: 524861581}
+  attackManager: {fileID: 2086304901}
+  elementPlugin: {fileID: 1832351405}
 --- !u!114 &1706152016
 MonoBehaviour:
   m_ObjectHideFlags: 0

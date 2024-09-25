@@ -740,7 +740,7 @@ GameObject:
   - component: {fileID: 714230261}
   - component: {fileID: 714230260}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Room Code
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2621,7 +2621,7 @@ GameObject:
   - component: {fileID: 2030542996}
   - component: {fileID: 2030542995}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Player Count
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

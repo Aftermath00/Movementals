@@ -9,7 +9,7 @@ public class GameStateManager : MonoBehaviour
     private void Start()
     {
         elementPlugin.StartCameraCapture();
-        SwitchToDefenseMode(); 
+        SwitchToAttackMode(); 
     }
 
     public void SwitchToDefenseMode()
