@@ -1,6 +1,0 @@
-framework module ElementalFramework {
-  umbrella header "ElementalFramework.h"
-  export *
-
-  module * { export * }
-}

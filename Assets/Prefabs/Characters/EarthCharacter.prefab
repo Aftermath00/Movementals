@@ -62,7 +62,7 @@ Transform:
   m_GameObject: {fileID: 4232146852408885206}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.21, y: -3.35, z: 1}
+  m_LocalPosition: {x: -2.21, y: -3.35, z: -9.976827}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -118,7 +118,7 @@ SpriteRenderer:
   m_Size: {x: 0.88, y: 1.38}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &7147819074016649984
@@ -226,9 +226,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fc7cfe1b59e24038b7e5abab8daf969, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletSpawnPoint: {fileID: 6778161308533686142}
-  bulletPrefab: {fileID: 2765328522417374776, guid: 58c49a457ddd14d58b24a4a915cd7f5b, type: 3}
-  bulletSpeed: 10
+  projectilePrefab: {fileID: 0}
+  target: {fileID: 0}
+  projectileMoveSpeed: 0
+  projectileMaxHeight: 0
+  maxHeight: 5
+  enemy: {fileID: 0}
+  trajectoryAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  axisCorrectionAnimationCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &8419364000841393204
 MonoBehaviour:
   m_ObjectHideFlags: 0
